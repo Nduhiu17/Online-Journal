@@ -1,0 +1,15 @@
+virtual/
+*__pycache__/
+.idea/
+*.pyc
+.pytest_cache/
+.cache
+pytest_cache
+src/_pytest/_version.py
+.vscode
+.vscode/
+htmlcov/
+htmlcov
+UI/
+UI
+start.sh
