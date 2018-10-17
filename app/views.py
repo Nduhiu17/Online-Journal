@@ -42,7 +42,6 @@ class EntryResource(Resource):
     def post(self):
         '''Method to add an entry(POST request)'''
         parser = reqparse.RequestParser()
-        parser.add_argument('user_id', help='This field cannot be blank', required=True)
         parser.add_argument('title', help='This field cannot be blank', required=True)
         parser.add_argument('description', help='This field cannot be blank', required=True)
         data = parser.parse_args()
@@ -58,7 +57,7 @@ class EntryResource(Resource):
                 return {'message': 'The length of the title should be atleast 10 characters'}, 400
             if len(data['description']) < 20:
                 return {'message': 'The length of your question content should be atleast 15 characters'},400
-            entry = Entry.save(user_id=data['user_id'], date_created=str(datetime.now()),
+            entry = Entry.save(user_id=get_jwt_identity(), date_created=str(datetime.now()),
                                date_modified=str(datetime.now()), title=data['title'],
                                description=data['description'])
 
@@ -66,7 +65,7 @@ class EntryResource(Resource):
 
 new_entry = api_v1.model('Entry', {
     'title': fields.String,
-    'body': fields.String,
+    'description': fields.String,
 })
 
 @ns.route('/entries/<string:id>')
@@ -90,10 +89,12 @@ class OneEntryResource(Resource):
         '''Method to delete an entry by entry author'''
         entry_to_delete = Entry.get_entry(id)
         logged_in_user = get_jwt_identity()
-        question_owner = entry_to_delete['user']['email']
+        
         print('logged in user is',logged_in_user)
-        print('question owner', entry_to_delete['user']['email'])
+        
         if entry_to_delete:
+            question_owner = entry_to_delete['user']['id']
+            print('question owner', question_owner)
             if logged_in_user == question_owner:
                 Entry.delete(id)
                 return ({'message': 'successfully deleted'}), 200
@@ -162,7 +163,7 @@ class UserRegistrationResource(Resource):
         return ({'message':'you have successfully registered','data':user}),201
 
 n_user = api_v1.model('Login', {
-    'username': fields.String,
+    'email': fields.String,
     'password': fields.String
 })
 

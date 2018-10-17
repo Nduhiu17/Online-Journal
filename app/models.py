@@ -30,18 +30,18 @@ class Entry:
         }
         return obj
 
-    @classmethod
-    def find_by_id(cls, id):
-        '''method to find a user by id'''
-        try:
-            cursor.execute("select * from users where id = %s", (id,))
-            retrieved_user = list(cursor.fetchone())
-            user = User(id=retrieved_user[0], username=retrieved_user[1], email=retrieved_user[2],
-                        password=retrieved_user[3], date_created=retrieved_user[4], date_modified=retrieved_user[5])
+    # @classmethod
+    # def find_by_id(cls, id):
+    #     '''method to find a user by id'''
+    #     try:
+    #         cursor.execute("select * from users where id = %s", (id,))
+    #         retrieved_user = list(cursor.fetchone())
+    #         user = User(id=retrieved_user[0], username=retrieved_user[1], email=retrieved_user[2],
+    #                     password=retrieved_user[3], date_created=retrieved_user[4], date_modified=retrieved_user[5])
 
-            return user.json_dumps()
-        except Exception:
-            return False
+    #         return user.json_dumps()
+    #     except Exception:
+    #         return False
 
     @classmethod
     def save(cls, user_id, date_created, date_modified, title, description):
